@@ -5,39 +5,6 @@
     </ion-header>
     <ion-content class="ion-padding">
       <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
-      <h1>This is the home page</h1>
     </ion-content>
   </ion-page>
 </template>
