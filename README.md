@@ -1,6 +1,6 @@
 ![](public/SparkShop.png)
 
-# Project Title
+# SparkShop
 
 SparkShop frontend API made as a final project bonus task for the certificate of completion of the Spark School programming course.
 Built with Vue.js, Vuex, Ionic Framework (UI elements and Icons) and axios for API communication.
