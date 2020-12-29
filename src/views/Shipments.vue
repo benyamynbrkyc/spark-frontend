@@ -31,10 +31,8 @@ import {
   IonContent,
   IonList,
   IonLabel,
-  IonItem,
-  alertController
+  IonItem
 } from '@ionic/vue';
-import { add } from 'ionicons/icons';
 import { defineComponent, onMounted, ref } from 'vue';
 import Navbar from '@/components/Navbar.vue';
 import store from '@/store';
