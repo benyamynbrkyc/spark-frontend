@@ -2,23 +2,34 @@
   <!-- eslint-disable vue/no-deprecated-slot-attribute -->
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-title id="navLogo">SparkShop</ion-title>
+      <ion-title @click="() => router.push('/')" id="navLogo"
+        >SparkShop</ion-title
+      >
       <div v-if="!mobile">
-        <ion-button v-if="!isEmpty(user)">
+        <ion-button
+          v-if="!isEmpty(user)"
+          @click="() => router.push('/shipments')"
+        >
           <img :src="user.profile_pic" id="profilePic" />
           &nbsp;
-          {{ user.name }} ({{ user.role === 'admin' ? 'Admin' : false }})
+          {{ user.name }}
+
+          <span v-if="user.role === 'admin'">
+            &nbsp;(Admin)
+          </span>
         </ion-button>
         <ion-button @click="pushHome(router)">Home </ion-button>
+        <ion-button v-if="user.role === 'admin'" @click="pushDash()"
+          >Dashboard</ion-button
+        >
       </div>
     </ion-buttons>
     <ion-buttons slot="end" v-if="!mobile" id="endButtonRow">
-      <ion-button v-if="isEmpty(user)" @click="pushLogin(router)"
-        >Log in</ion-button
-      >
-      <ion-button v-if="isEmpty(user)" @click="pushSignUp(router)"
-        >Sign Up</ion-button
-      >
+      <ion-button v-if="isEmpty(user)" @click="pushLogin">Log in</ion-button>
+      <ion-button v-if="isEmpty(user)" @click="pushSignUp">Sign Up</ion-button>
+      <ion-button v-if="!isEmpty(user)" @click="pushCart">
+        <ion-icon slot="icon-only" :icon="cartOutline"></ion-icon>
+      </ion-button>
       <ion-button v-if="!isEmpty(user)" @click="signOut">Sign out</ion-button>
     </ion-buttons>
     <ion-buttons v-if="mobile" id="endButtonRow" slot="end">
@@ -43,14 +54,14 @@ import {
   menuController,
   IonIcon
 } from '@ionic/vue';
-import { menuOutline } from 'ionicons/icons';
+import { menuOutline, cartOutline } from 'ionicons/icons';
 import { defineComponent, onMounted, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import store from '@/store';
 import isEmpty from '@/utils/isObjectEmpty';
 import { signedOutToast } from '@/utils/toasts';
 import signOutHandler from '@/utils/signOut';
-import { pushLogin, pushSignUp, pushHome } from '@/router/routeControllers';
+import routeControllers from '@/router/routeControllers';
 
 export default defineComponent({
   name: 'Navbar',
@@ -66,6 +77,14 @@ export default defineComponent({
     const route = useRoute();
     const user = ref(store.getters.getUser);
     const mobile = ref(window.innerWidth < 900);
+
+    const {
+      pushLogin,
+      pushSignUp,
+      pushHome,
+      pushDash,
+      pushCart
+    } = routeControllers();
 
     onMounted(() => {
       window.addEventListener('resize', () => {
@@ -90,6 +109,8 @@ export default defineComponent({
       pushLogin,
       pushHome,
       pushSignUp,
+      pushDash,
+      pushCart,
       openMenu,
       isEmpty,
       signOut,
@@ -100,13 +121,17 @@ export default defineComponent({
       user,
       mobile,
       // icons
-      menuOutline
+      menuOutline,
+      cartOutline
     };
   }
 });
 </script>
 
 <style lang="scss" scoped>
+#navLogo {
+  cursor: pointer;
+}
 ion-toolbar {
   ion-buttons {
     ion-button {

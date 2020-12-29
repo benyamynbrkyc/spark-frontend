@@ -1,13 +1,33 @@
-const pushLogin = (router: any) => {
-  router.push('/login');
-};
+import { useRouter } from 'vue-router';
 
-const pushSignUp = (router: any) => {
-  router.push('/signup');
-};
+export default () => {
+  const router = useRouter();
 
-const pushHome = (router: any) => {
-  router.push('/');
-};
+  const pushLogin = () => {
+    router.push('/login');
+  };
 
-export { pushLogin, pushSignUp, pushHome };
+  const pushSignUp = () => {
+    router.push('/signup');
+  };
+
+  const pushHome = () => {
+    router.push('/');
+  };
+
+  const pushDash = () => {
+    router.push('/dashboard');
+  };
+
+  const pushCart = () => {
+    router.push('/cart');
+  };
+
+  return {
+    pushLogin,
+    pushSignUp,
+    pushHome,
+    pushDash,
+    pushCart
+  };
+};

@@ -23,7 +23,10 @@ import '@ionic/vue/css/display.css';
 const app = createApp(App)
   .use(store)
   .use(router)
-  .use(IonicVue);
+  .use(IonicVue, {
+    rippleEffect: true,
+    mode: 'md'
+  });
 
 router.isReady().then(() => {
   app.mount('#app');

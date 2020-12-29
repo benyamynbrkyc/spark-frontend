@@ -3,17 +3,35 @@
   <ion-menu side="end" menu-id="main-menu" content-id="main">
     <ion-header>
       <ion-toolbar>
-        <ion-title id="navLogo">SparkShop</ion-title>
+        <ion-title @click="pushHome" id="navLogo">SparkShop</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content>
       <ion-list>
-        <ion-item v-if="!isEmpty(store.getters.getUser)" button>
+        <ion-item
+          v-if="!isEmpty(store.getters.getUser)"
+          button
+          @click="pushShip"
+        >
           <img :src="store.getters.getUser.profile_pic" id="profilePic" />
           &nbsp;
           {{ store.getters.getUser.name }} ({{
             store.getters.getUser.role === 'admin' ? 'Admin' : false
           }})
+        </ion-item>
+        <ion-item button @click="pushHome">
+          Home
+        </ion-item>
+        <ion-item
+          button
+          v-if="!isEmpty(store.getters.getUser)"
+          @click="pushDash"
+        >
+          Dashboard
+        </ion-item>
+        <ion-item button @click="pushCart">
+          Cart
+          <ion-icon slot="end" :icon="cartOutline"></ion-icon>
         </ion-item>
         <ion-item
           button
@@ -50,8 +68,10 @@ import {
   IonTitle,
   IonToolbar,
   IonItem,
+  IonIcon,
   menuController
 } from '@ionic/vue';
+import { cartOutline } from 'ionicons/icons';
 import { defineComponent, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import store from '@/store';
@@ -68,7 +88,8 @@ export default defineComponent({
     IonMenu,
     IonTitle,
     IonToolbar,
-    IonItem
+    IonItem,
+    IonIcon
   },
   setup() {
     const user = ref(store.getters.getUser);
@@ -101,6 +122,42 @@ export default defineComponent({
       }
     };
 
+    const pushHome = () => {
+      if (route.fullPath === '/') {
+        menuController.close();
+      } else {
+        menuController.close();
+        router.push('/');
+      }
+    };
+
+    const pushDash = () => {
+      if (route.fullPath === '/dashboard') {
+        menuController.close();
+      } else {
+        menuController.close();
+        router.push('/dashboard');
+      }
+    };
+
+    const pushShip = () => {
+      if (route.fullPath === '/shipments') {
+        menuController.close();
+      } else {
+        menuController.close();
+        router.push('/shipments');
+      }
+    };
+
+    const pushCart = () => {
+      if (route.fullPath === '/cart') {
+        menuController.close();
+      } else {
+        menuController.close();
+        router.push('/cart');
+      }
+    };
+
     return {
       // vars
       user,
@@ -108,10 +165,16 @@ export default defineComponent({
       // func
       pushLogin,
       pushSignUp,
+      pushDash,
+      pushHome,
+      pushShip,
+      pushCart,
       signOut,
       isEmpty,
       store,
-      router
+      router,
+      // icons
+      cartOutline
     };
   }
 });
@@ -132,5 +195,8 @@ img {
   height: 30px !important;
   width: 30px !important;
   clip-path: circle(50% at 50% 50%);
+}
+#navLogo {
+  cursor: pointer;
 }
 </style>

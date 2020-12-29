@@ -11,23 +11,32 @@
         <form @submit.prevent="submitFormData">
           <ion-item>
             <ion-label position="floating">Email</ion-label>
-            <ion-input v-model="email" type="email"></ion-input>
+            <ion-input required v-model="email" type="email"></ion-input>
           </ion-item>
           <ion-item>
             <ion-label position="floating">Name</ion-label>
-            <ion-input v-model="name" type="text"></ion-input>
+            <ion-input required v-model="name" type="text"></ion-input>
           </ion-item>
           <ion-item>
             <ion-label position="floating">Password</ion-label>
-            <ion-input v-model="password" type="password"></ion-input>
+            <ion-input required v-model="password" type="password"></ion-input>
           </ion-item>
           <ion-item>
             <ion-label position="floating">Repeat password</ion-label>
-            <ion-input v-model="passwordRepeat" type="password"></ion-input>
+            <ion-input
+              required
+              v-model="passwordRepeat"
+              type="password"
+            ></ion-input>
+          </ion-item>
+          <ion-item v-if="showPasswordsMustBeTheSame" id="error" color="danger">
+            <ion-label>
+              Passwords must be the same
+            </ion-label>
           </ion-item>
           <ion-item>
             <ion-label position="floating">Birth date</ion-label>
-            <ion-input v-model="birthDate" type="text"></ion-input>
+            <ion-input required v-model="birthDate" type="text"></ion-input>
           </ion-item>
           <ion-note>
             Birth date must follow format:
@@ -35,7 +44,7 @@
           </ion-note>
           <ion-item>
             <ion-label position="floating">Phone number</ion-label>
-            <ion-input v-model="phoneNumber" type="text"></ion-input>
+            <ion-input required v-model="phoneNumber" type="text"></ion-input>
           </ion-item>
           <ion-note>
             Phone number must follow format:
@@ -65,10 +74,15 @@
               </ion-item>
             </ion-radio-group>
           </ion-list>
+          <ion-item v-if="showMissingRole" id="error" color="danger">
+            <ion-label>
+              Please choose role
+            </ion-label>
+          </ion-item>
 
           <ion-item>
             <ion-label position="floating">Profile picture</ion-label>
-            <ion-input v-model="profilePic" type="text"></ion-input>
+            <ion-input required v-model="profilePic" type="text"></ion-input>
           </ion-item>
           <ion-note>
             Profile picture must be a url to an image.
@@ -89,9 +103,9 @@
             Invalid Login Credentials
           </ion-label>
         </ion-item>
-        <ion-item v-if="showPasswordsMustBeTheSame" id="error" color="danger">
+        <ion-item v-if="showUserExists" id="error" color="danger">
           <ion-label>
-            Passwords must be the same
+            User already exists
           </ion-label>
         </ion-item>
       </div>
@@ -119,6 +133,9 @@ import { useRouter } from 'vue-router';
 import Navbar from '@/components/Navbar.vue';
 import axios from 'axios';
 import baseURL from '@/utils/baseURL';
+import store from '@/store';
+import setAxiosDefaults from '@/utils/setAxiosDefaults';
+import { loggedInToast } from '@/utils/toasts';
 
 export default defineComponent({
   name: 'Sign Up',
@@ -150,6 +167,8 @@ export default defineComponent({
     // controllers
     const showInvalidCredentials = ref(false);
     const showPasswordsMustBeTheSame = ref(false);
+    const showMissingRole = ref(false);
+    const showUserExists = ref(false);
 
     const submitFormData = async () => {
       console.log({
@@ -162,18 +181,37 @@ export default defineComponent({
         profile_pic: profilePic.value
       });
 
-      // if (password.value !== passwordRepeat.value) {
-      //   showPasswordsMustBeTheSame.value = true
-      //   return
-      // }
+      if (password.value !== passwordRepeat.value) {
+        showPasswordsMustBeTheSame.value = true;
+      } else if (role.value == '') {
+        showMissingRole.value = true;
+      } else {
+        try {
+          const response = await axios.post(`${baseURL}/user/signup`, {
+            name: name.value.trim(),
+            email: email.value.trim(),
+            phone: phoneNumber.value.trim(),
+            birth_date: birthDate.value.trim(),
+            role: role.value,
+            password: password.value.trim(),
+            profile_pic: profilePic.value.trim()
+          });
+          console.log(response);
 
-      // try {
-      //   const response = await axios.post(`${baseURL}/user/signup`, {
-      //     name:
-      //   })
-      // } catch (err) {
-      //   showInvalidCredentials.value = true
-      // }
+          if (response.data.status == 403) {
+            showUserExists.value = true;
+          } else {
+            await store.commit('setUser', response.data.user.user);
+            await store.commit('setToken', response.data.token);
+            setAxiosDefaults(response.data.token);
+            loggedInToast();
+            router.push('/');
+          }
+        } catch (err) {
+          console.log(err);
+          showInvalidCredentials.value = true;
+        }
+      }
     };
 
     return {
@@ -190,7 +228,9 @@ export default defineComponent({
       submitFormData,
       // controllers
       showInvalidCredentials,
-      showPasswordsMustBeTheSame
+      showPasswordsMustBeTheSame,
+      showMissingRole,
+      showUserExists
     };
   }
 });

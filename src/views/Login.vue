@@ -26,10 +26,6 @@
           </ion-label>
         </ion-item>
       </div>
-
-      <p>delete this</p>
-      <h2>benjamin.brkic@gmail.com</h2>
-      <h2>supertajnasifra</h2>
     </ion-content>
   </ion-page>
 </template>
